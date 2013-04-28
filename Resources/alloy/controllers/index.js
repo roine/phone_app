@@ -5,6 +5,7 @@ function Controller() {
     var $ = this;
     var exports = {};
     $.__views.index = Ti.UI.createTabGroup({
+        height: Titanium.UI.FILL,
         id: "index"
     });
     $.__views.__alloyId1 = Ti.UI.createWindow({
@@ -44,7 +45,7 @@ function Controller() {
     var __alloyId4 = [];
     $.__views.view1 = Ti.UI.createView({
         id: "view1",
-        backgroundImage: "debut_dark.png"
+        backgroundImage: "http://subtlepatterns.com/patterns/debut_dark.png"
     });
     __alloyId4.push($.__views.view1);
     $.__views.from = Ti.UI.createTextField({
@@ -90,7 +91,8 @@ function Controller() {
     $.__views.scrollableView = Ti.UI.createScrollableView({
         views: __alloyId4,
         id: "scrollableView",
-        showPagingControl: "true"
+        showPagingControl: "true",
+        maxZoomScale: "2.0"
     });
     $.__views.currencies_opt.add($.__views.scrollableView);
     $.__views.currencies = Ti.UI.createTab({
@@ -104,6 +106,13 @@ function Controller() {
     _.extend($, $.__views);
     $.currencies.addEventListener("click", function() {
         require("currencies").init($);
+    });
+    $.index.addEventListener("swipe", function(e) {
+        Ti.API.info(JSON.stringify(e));
+        if ("up" == e.direction) {
+            $.index.setActiveTab(1);
+            require("currencies").init($);
+        }
     });
     $.index.open();
     _.extend($, exports);

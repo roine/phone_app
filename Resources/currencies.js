@@ -13,7 +13,6 @@ var Currencies = function() {
         events();
     };
     var loadCurrencies = function() {
-        "sdsdf{0}".format("jojo");
         currencies = new joli.model({
             table: "currencies",
             columns: {
