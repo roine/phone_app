@@ -1,0 +1,17 @@
+<Alloy>
+	<TabGroup>
+		<Tab title="Weather" icon="KS_nav_ui.png" id="weather">
+			<Window title="Weather">
+				<Label>I am Window 1</Label>
+			</Window>
+		</Tab>
+		<Tab title="Currencies" icon="KS_nav_views.png" id="currencies">
+			<Window title="Currencies" id='currencies_opt'>
+				<Require src="option_menu" />
+				<Picker id="picker" top="50" selectionIndicator="true" useSpinner="true">
+					
+				</Picker>
+			</Window>
+		</Tab>
+	</TabGroup>
+</Alloy>

@@ -1,0 +1,5 @@
+<Alloy>
+	<Menu id="option_menu">
+		<MenuItem id="curr_option" title="Options" />
+	</Menu>
+</Alloy>
