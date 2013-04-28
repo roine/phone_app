@@ -8,9 +8,11 @@
 		<Tab title="Currencies" icon="KS_nav_views.png" id="currencies">
 			<Window title="Currencies" id='currencies_opt'>
 				<Require src="option_menu" />
-				<Picker id="picker" top="50" selectionIndicator="true" useSpinner="true">
+				<TextField id="from" keyboardType="Titanium.UI.KEYBOARD_NUMBER_PAD" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED" color="#336699" top="5%" left="5%" width="90%" height="10%" />
+				<Picker id="picker" top="20%" selectionIndicator="true" useSpinner="true" height="80%">
 					
 				</Picker>
+				<TextField id="to" keyboardType="Titanium.UI.KEYBOARD_NUMBER_PAD" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED" color="#336699" top="85%" left="5%" width="90%" height="10%" />
 			</Window>
 		</Tab>
 	</TabGroup>

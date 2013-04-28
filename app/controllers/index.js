@@ -1,13 +1,7 @@
-var joli = require('/joli/joli').connect('joso');
-require('my_lib');
-require('currencies');
-require('weather');
-$.currencies.addEventListener('click', function(e) {
-	main();
-});
-$.weather.addEventListener('click', function(e) {
-
-});
+// Ti.include('my_lib');
 
 
+$.currencies.addEventListener('click', function() { 
+	var currencies = require('currencies').init($);
+})
 $.index.open();

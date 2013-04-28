@@ -42,13 +42,36 @@ function Controller() {
         __parentSymbol: $.__views.currencies_opt
     });
     $.__views.__alloyId3.setParent($.__views.currencies_opt);
+    $.__views.from = Ti.UI.createTextField({
+        id: "from",
+        keyboardType: Titanium.UI.KEYBOARD_NUMBER_PAD,
+        borderStyle: Ti.UI.INPUT_BORDERSTYLE_ROUNDED,
+        color: "#336699",
+        top: "5%",
+        left: "5%",
+        width: "90%",
+        height: "10%"
+    });
+    $.__views.currencies_opt.add($.__views.from);
     $.__views.picker = Ti.UI.createPicker({
         id: "picker",
-        top: "50",
+        top: "20%",
         selectionIndicator: "true",
-        useSpinner: "true"
+        useSpinner: "true",
+        height: "80%"
     });
     $.__views.currencies_opt.add($.__views.picker);
+    $.__views.to = Ti.UI.createTextField({
+        id: "to",
+        keyboardType: Titanium.UI.KEYBOARD_NUMBER_PAD,
+        borderStyle: Ti.UI.INPUT_BORDERSTYLE_ROUNDED,
+        color: "#336699",
+        top: "85%",
+        left: "5%",
+        width: "90%",
+        height: "10%"
+    });
+    $.__views.currencies_opt.add($.__views.to);
     $.__views.currencies = Ti.UI.createTab({
         window: $.__views.currencies_opt,
         title: "Currencies",
@@ -59,14 +82,9 @@ function Controller() {
     $.__views.index && $.addTopLevelView($.__views.index);
     exports.destroy = function() {};
     _.extend($, $.__views);
-    require("/joli/joli").connect("joso");
-    require("my_lib");
-    require("currencies");
-    require("weather");
     $.currencies.addEventListener("click", function() {
-        main();
+        require("currencies").init($);
     });
-    $.weather.addEventListener("click", function() {});
     $.index.open();
     _.extend($, exports);
 }

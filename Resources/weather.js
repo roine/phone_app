@@ -1,0 +1,1 @@
+$.weather.addEventListener("click", function() {});
