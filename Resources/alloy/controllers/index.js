@@ -28,7 +28,6 @@ function Controller() {
     $.__views.weather = Ti.UI.createTab({
         window: $.__views.__alloyId1,
         title: "Weather",
-        icon: "KS_nav_ui.png",
         id: "weather"
     });
     $.__views.index.addTab($.__views.weather);
@@ -42,6 +41,12 @@ function Controller() {
         __parentSymbol: $.__views.currencies_opt
     });
     $.__views.__alloyId3.setParent($.__views.currencies_opt);
+    var __alloyId4 = [];
+    $.__views.view1 = Ti.UI.createView({
+        id: "view1",
+        backgroundImage: "debut_dark.png"
+    });
+    __alloyId4.push($.__views.view1);
     $.__views.from = Ti.UI.createTextField({
         id: "from",
         keyboardType: Titanium.UI.KEYBOARD_NUMBER_PAD,
@@ -52,7 +57,7 @@ function Controller() {
         width: "90%",
         height: "10%"
     });
-    $.__views.currencies_opt.add($.__views.from);
+    $.__views.view1.add($.__views.from);
     $.__views.picker = Ti.UI.createPicker({
         id: "picker",
         top: "20%",
@@ -60,7 +65,7 @@ function Controller() {
         useSpinner: "true",
         height: "80%"
     });
-    $.__views.currencies_opt.add($.__views.picker);
+    $.__views.view1.add($.__views.picker);
     $.__views.to = Ti.UI.createTextField({
         id: "to",
         keyboardType: Titanium.UI.KEYBOARD_NUMBER_PAD,
@@ -71,11 +76,26 @@ function Controller() {
         width: "90%",
         height: "10%"
     });
-    $.__views.currencies_opt.add($.__views.to);
+    $.__views.view1.add($.__views.to);
+    $.__views.view2 = Ti.UI.createView({
+        id: "view2",
+        backgroundColor: "#246"
+    });
+    __alloyId4.push($.__views.view2);
+    $.__views.view3 = Ti.UI.createView({
+        id: "view3",
+        backgroundColor: "#48b"
+    });
+    __alloyId4.push($.__views.view3);
+    $.__views.scrollableView = Ti.UI.createScrollableView({
+        views: __alloyId4,
+        id: "scrollableView",
+        showPagingControl: "true"
+    });
+    $.__views.currencies_opt.add($.__views.scrollableView);
     $.__views.currencies = Ti.UI.createTab({
         window: $.__views.currencies_opt,
         title: "Currencies",
-        icon: "KS_nav_views.png",
         id: "currencies"
     });
     $.__views.index.addTab($.__views.currencies);

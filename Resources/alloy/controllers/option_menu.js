@@ -5,12 +5,12 @@ function Controller() {
     var $ = this;
     var exports = {};
     __parentSymbol.activity.onCreateOptionsMenu = function(e) {
-        var __alloyId6 = {
+        var __alloyId7 = {
             id: "curr_option",
             title: "Options"
         };
-        $.__views.curr_option = e.menu.add(_.pick(__alloyId6, Alloy.Android.menuItemCreateArgs));
-        $.__views.curr_option.applyProperties(_.omit(__alloyId6, Alloy.Android.menuItemCreateArgs));
+        $.__views.curr_option = e.menu.add(_.pick(__alloyId7, Alloy.Android.menuItemCreateArgs));
+        $.__views.curr_option.applyProperties(_.omit(__alloyId7, Alloy.Android.menuItemCreateArgs));
     };
     $.__views.option_menu && $.addTopLevelView($.__views.option_menu);
     exports.destroy = function() {};

@@ -1,18 +1,23 @@
 <Alloy>
 	<TabGroup>
-		<Tab title="Weather" icon="KS_nav_ui.png" id="weather">
+		<Tab title="Weather" id="weather">
 			<Window title="Weather">
 				<Label>I am Window 1</Label>
 			</Window>
 		</Tab>
-		<Tab title="Currencies" icon="KS_nav_views.png" id="currencies">
+		<Tab title="Currencies" id="currencies">
 			<Window title="Currencies" id='currencies_opt'>
 				<Require src="option_menu" />
-				<TextField id="from" keyboardType="Titanium.UI.KEYBOARD_NUMBER_PAD" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED" color="#336699" top="5%" left="5%" width="90%" height="10%" />
-				<Picker id="picker" top="20%" selectionIndicator="true" useSpinner="true" height="80%">
-					
-				</Picker>
-				<TextField id="to" keyboardType="Titanium.UI.KEYBOARD_NUMBER_PAD" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED" color="#336699" top="85%" left="5%" width="90%" height="10%" />
+				<ScrollableView id="scrollableView" showPagingControl="true">
+					<View id="view1" backgroundImage="debut_dark.png">
+						<TextField id="from" keyboardType="Titanium.UI.KEYBOARD_NUMBER_PAD" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED" color="#336699" top="5%" left="5%" width="90%" height="10%" />
+						<Picker id="picker" top="20%" selectionIndicator="true" useSpinner="true" height="80%"></Picker>
+						<TextField id="to" keyboardType="Titanium.UI.KEYBOARD_NUMBER_PAD" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED" color="#336699" top="85%" left="5%" width="90%" height="10%" />
+					</View>
+					<View id="view2" backgroundColor="#246" />
+					<View id="view3" backgroundColor="#48b" />
+				</ScrollableView>
+
 			</Window>
 		</Tab>
 	</TabGroup>

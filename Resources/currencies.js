@@ -1,11 +1,19 @@
 var Currencies = function() {
+    function events() {}
     var joli = require("/joli/joli").connect("joso");
     var $;
     var init = function(controller) {
+        String.prototype.format = String.prototype.f = function() {
+            var s = this, i = arguments.length;
+            while (i--) s = s.replace(new RegExp("\\{" + i + "\\}", "gm"), arguments[i]);
+            return s;
+        };
         $ = $ || controller;
         loadCurrencies();
+        events();
     };
     var loadCurrencies = function() {
+        "sdsdf{0}".format("jojo");
         currencies = new joli.model({
             table: "currencies",
             columns: {
