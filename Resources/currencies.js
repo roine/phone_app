@@ -1,5 +1,43 @@
 var Currencies = function() {
-    function events() {}
+    function addNewCurrencyPair() {
+        Ti.UI.backgroundColor = "white";
+        var win = Ti.UI.createWindow({
+            layout: "vertical",
+            backgroundColor: "white",
+            width: 90
+        });
+        win.open({
+            modal: true
+        });
+        a = new joli.query().select().from("currencies");
+        cur = a.execute();
+        var row = [];
+        for (i in cur) row[i] = Ti.UI.createPickerRow({
+            title: cur[i].code + " - " + cur[i].money
+        });
+        var picker = Ti.UI.createPicker({
+            top: 50,
+            selectionIndicator: true
+        });
+        var picker2 = Ti.UI.createPicker({
+            top: 100,
+            selectionIndicator: true
+        });
+        picker.add(row);
+        picker2.add(row);
+        change = {};
+        picker.addEventListener("change", function(e) {
+            change["from"] = e.selectedValue[0];
+            change["to"] && saveChangePicker(change);
+        }, false);
+        picker2.addEventListener("change", function(e) {
+            change["to"] = e.selectedValue[0];
+            change["from"] && saveChangePicker(change);
+        }, false);
+        win.add(picker);
+        win.add(picker2);
+        win.open();
+    }
     var joli = require("/joli/joli").connect("joso");
     var $;
     var init = function(controller) {
@@ -8,9 +46,57 @@ var Currencies = function() {
             while (i--) s = s.replace(new RegExp("\\{" + i + "\\}", "gm"), arguments[i]);
             return s;
         };
-        $ = $ || controller;
         loadCurrencies();
-        events();
+        $ = $ || controller;
+        addLabel = Ti.UI.createLabel({
+            text: "⊕",
+            font: {
+                fontSize: 200
+            },
+            shadowColor: "#ff0000",
+            shadowOffset: {
+                x: 50,
+                y: 50
+            },
+            color: "silver",
+            opacity: .8,
+            width: Ti.UI.SIZE,
+            height: Ti.UI.SIZE,
+            textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER
+        });
+        $.currencies.add(addLabel);
+        $.currencies.backgroundGradient = {
+            type: "linear",
+            colors: [ "#3498db", "#2980b9" ],
+            startPoint: {
+                x: "50%",
+                y: "0%"
+            },
+            endPoint: {
+                x: "50%",
+                y: "100%"
+            },
+            backFillStart: false
+        };
+        addLabel.addEventListener("click", addNewCurrencyPair);
+    };
+    var saveChangePicker = function() {
+        var currencypairs = new joli.model({
+            table: "currencypairs",
+            columns: {
+                id: "INTEGER PRIMARY KEY AUTOINCREMENT",
+                from: "STRING",
+                to: "STRING"
+            },
+            methods: {
+                update: function(change) {
+                    for (i in change) currencypairs.count() ? this.set(i, change[i]) : this.newRecord(i, change[i]);
+                }
+            }
+        });
+        joli.models.initialize();
+        var currencypair = models.currencypairs.update();
+        currencypair.save();
     };
     var loadCurrencies = function() {
         currencies = new joli.model({
@@ -22,64 +108,42 @@ var Currencies = function() {
             }
         });
         joli.models.initialize();
-        if (currencies.count()) addPicker(); else {
-            if (!Titanium.Network.online) {
-                alert("No connection whatsoever to internet dude!");
-                return;
-            }
-            var message = "Please wait while loading: {0}%";
-            var loading = Titanium.UI.createAlertDialog({
-                title: "Loading",
-                message: message.format("0")
-            });
-            loading.show();
-            var xhr = Ti.Network.createHTTPClient({
-                onload: function() {
-                    json = JSON.parse(this.responseText);
-                    var currency = new joli.record(currencies);
-                    j = 0;
-                    total = Object.keys(json).length;
-                    for (i in json) {
-                        j++;
-                        currency.fromArray({
-                            code: i,
-                            money: json[i]
-                        });
-                        percentage = Math.round(100 * (j / total));
-                        loading.setMessage(message.format(percentage));
-                        currency.save();
-                    }
-                    addPicker();
-                    loading.hide();
-                },
-                onerror: function(e) {
-                    alert("Error:" + JSON.stringify(e));
-                },
-                timeout: 5e3
-            });
-            xhr.open("GET", Alloy.CFG.exchange.URLCurrencies + "?app_id=" + Alloy.CFG.exchange.key);
-            xhr.send();
+        if (currencies.count()) return;
+        if (!Titanium.Network.online) {
+            alert("No connection whatsoever to internet dude!");
+            return;
         }
-    };
-    var styleColumn = function(column) {
-        column.setWidth("90%");
-    };
-    var addPicker = function() {
-        if (null !== $.picker.getSelectedRow(0)) return;
-        a = new joli.query().select().from("currencies");
-        cur = a.execute();
-        var column1 = Ti.UI.createPickerColumn();
-        var column2 = Ti.UI.createPickerColumn();
-        styleColumn(column1);
-        styleColumn(column2);
-        for (i in cur) {
-            var row = Ti.UI.createPickerRow({
-                title: cur[i].code + " - " + cur[i].money
-            });
-            column1.addRow(row);
-            column2.addRow(row);
-        }
-        $.picker.add([ column1, column2 ]);
+        var message = "Please wait while loading: {0}%";
+        var loading = Titanium.UI.createAlertDialog({
+            title: "Loading",
+            message: message.format("0")
+        });
+        loading.show();
+        var xhr = Ti.Network.createHTTPClient({
+            onload: function() {
+                json = JSON.parse(this.responseText);
+                var currency = new joli.record(currencies);
+                j = 0;
+                total = Object.keys(json).length;
+                for (i in json) {
+                    j++;
+                    currency.fromArray({
+                        code: i,
+                        money: json[i]
+                    });
+                    percentage = Math.round(100 * (j / total));
+                    loading.setMessage(message.format(percentage));
+                    currency.save();
+                }
+                loading.hide();
+            },
+            onerror: function(e) {
+                alert("Error:" + JSON.stringify(e));
+            },
+            timeout: 5e3
+        });
+        xhr.open("GET", Alloy.CFG.exchange.URLCurrencies + "?app_id=" + Alloy.CFG.exchange.key);
+        xhr.send();
     };
     return {
         init: init,

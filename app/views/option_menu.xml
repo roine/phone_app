@@ -1,5 +1,5 @@
 <Alloy>
 	<Menu id="option_menu">
-		<MenuItem id="curr_option" title="Options" />
+		<MenuItem id="opt_currencies" title="Options" />
 	</Menu>
 </Alloy>
