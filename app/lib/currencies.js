@@ -2,6 +2,31 @@ var Currencies = (function() {
 	// 	load joli ORM
 	var joli = require('/joli/joli').connect('joso');
 
+	var models = (function() {
+
+		var m = {};
+
+		m.currency_pairs = new joli.model({
+			table : 'currency_pair',
+			columns : {
+				id : "INTEGER PRIMARY KEY AUTOINCREMENT",
+				from_currency : "STRING",
+				to_currency : "STRING",
+				view_index : "INTEGER"
+			}
+		});
+
+		m.currencies = new joli.model({
+			table : 'currencies',
+			columns : {
+				id : "INTEGER PRIMARY KEY AUTOINCREMENT",
+				code : "STRING UNIQUE",
+				money : "STRING UNIQUE"
+			}
+		});
+		return m;
+	})();
+
 	// set  the $ which refere to the base controller
 	var $, currentView = 1;
 
@@ -48,33 +73,44 @@ var Currencies = (function() {
 
 		loadCurrencies();
 
-		$.addCross.addEventListener('click', addNewCurrencyPair)
-		alert($.addCross)
-		var currencypairs = new joli.model({
-			table : "currency_pair",
-			columns : {
-				id : "INTEGER PRIMARY KEY AUTOINCREMENT",
-				from_currency : "STRING",
-				to_currency : "STRING",
-				view_index : "INTEGER"
-			}
-
-		});
+		var addLabel = [];
+		for (var i = 0, total = 2; i < total; i++) {
+			addLabel[i] = Ti.UI.createLabel({
+				text : '\u2295',
+				font : {
+					fontSize : 250
+				},
+				shadowColor : '#ff0000',
+				shadowOffset : {
+					x : 50,
+					y : 50
+				},
+				color : 'white',
+				opacity : .8,
+				width : Ti.UI.SIZE,
+				height : Ti.UI.SIZE,
+				textAlign : Ti.UI.TEXT_ALIGNMENT_CENTER
+			});
+			addLabel[i].addEventListener('click', addNewCurrencyPair)
+		}
 
 		$.scrollableView.addEventListener('scrollend', function(e) {
-			currentView = e.currentPage + 1;
-			var checkIsset = new joli.query().select().from('currency_pair').where('view_index = ?', currentView).execute('array');
-			if ( currencypair = checkIsset[0]) {
+			if (!hasSave()) {
+				addLabel[currentView].hide()
 			}
 		});
-
-		var checkIsset = new joli.query().select().from('currency_pair').where('view_index = ?', currentView).execute('array');
-		if ( currencypair = checkIsset[0]) {
+		$.view1.add(addLabel[0]);
+		$.view2.add(addLabel[1]);
+		if (!hasSave()) {
+			addLabel[currentView].hide()
 		}
 
 	}
+	function hasSave(view) {
+		return models.currency_pairs.findOneBy('view_index', currentView);
+	}
+
 	function addNewCurrencyPair() {
-		alert('fd')
 		var win = Ti.UI.createWindow({
 			layout : 'vertical',
 			backgroundColor : 'white',
@@ -141,16 +177,7 @@ var Currencies = (function() {
 	}
 
 	var saveChangePicker = function(change) {
-		var currencypairs = new joli.model({
-			table : "currency_pair",
-			columns : {
-				id : "INTEGER PRIMARY KEY AUTOINCREMENT",
-				from_currency : "STRING",
-				to_currency : "STRING",
-				view_index : "INTEGER"
-			}
 
-		});
 		joli.models.initialize();
 		var checkIsset = new joli.query().select('from_currency, COUNT(*) as total').from('currency_pair').where('view_index = ?', currentView).execute('array');
 		for (i in checkIsset) {

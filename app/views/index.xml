@@ -8,8 +8,8 @@
 		<Tab title="Currencies" id="currencies_tab" >
 			<Window title="Currencies" id='currencies' >
 				<ScrollableView id="scrollableView" showPagingControl="true">
-					<View id="view1"><Label id="addCross"></Label></View>
-					<View id="view2"><Label id="addCross"></Label></View>
+					<View id="view1"></View>
+					<View id="view2"></View>
 				</ScrollableView>
 			</Window>
 			
