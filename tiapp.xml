@@ -7,19 +7,19 @@
     <property name="acs-oauth-key-development" type="string">SGf6CX41gKzX73P5MVKiKDv9kdkU0MIN</property>
     <property name="acs-api-key-development" type="string">LWYHv7IJ7TOaHEL787bKXC7EYwS1LWsG</property>
     <id>com.joso</id>
-    <name>joso army swiss knife</name>
+    <name>joso_army_swiss_knife</name>
     <version>1.0</version>
-    <publisher>test</publisher>
+    <publisher>Jonathan de Montalembert</publisher>
     <url>http://</url>
     <description>not specified</description>
-    <copyright>2013 by test</copyright>
+    <copyright>2013 by Jonathan de Montalembert</copyright>
     <icon>appicon.png</icon>
     <persistent-wifi>false</persistent-wifi>
     <prerendered-icon>false</prerendered-icon>
     <statusbar-style>default</statusbar-style>
     <statusbar-hidden>false</statusbar-hidden>
-    <fullscreen>false</fullscreen>
-    <navbar-hidden>false</navbar-hidden>
+    <fullscreen>true</fullscreen>
+    <navbar-hidden>true</navbar-hidden>
     <analytics>true</analytics>
     <guid>9a02f45a-cadf-42a6-80b6-7bcac06be9f4</guid>
     <property name="ti.ui.defaultunit" type="string">system</property>

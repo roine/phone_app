@@ -11,3 +11,19 @@
 	},
 	textAlign: 'center'
 } 
+"#addCross":{
+	text : '\u2295',
+	font : {
+					fontSize : 250
+				},
+				shadowColor : '#ff0000',
+				shadowOffset : {
+					x : 50,
+					y : 50
+				},
+				color : 'white',
+				opacity : 0.8,
+				width : Ti.UI.SIZE,
+				height : Ti.UI.SIZE,
+				textAlign : Ti.UI.TEXT_ALIGNMENT_CENTER
+			}

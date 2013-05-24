@@ -5,12 +5,12 @@ function Controller() {
     var $ = this;
     var exports = {};
     __parentSymbol.activity.onCreateOptionsMenu = function(e) {
-        var __alloyId9 = {
+        var __alloyId10 = {
             id: "opt_currencies",
             title: "Options"
         };
-        $.__views.opt_currencies = e.menu.add(_.pick(__alloyId9, Alloy.Android.menuItemCreateArgs));
-        $.__views.opt_currencies.applyProperties(_.omit(__alloyId9, Alloy.Android.menuItemCreateArgs));
+        $.__views.opt_currencies = e.menu.add(_.pick(__alloyId10, Alloy.Android.menuItemCreateArgs));
+        $.__views.opt_currencies.applyProperties(_.omit(__alloyId10, Alloy.Android.menuItemCreateArgs));
     };
     $.__views.option_menu && $.addTopLevelView($.__views.option_menu);
     exports.destroy = function() {};

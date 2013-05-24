@@ -3,9 +3,10 @@ var Currencies = (function() {
 	var joli = require('/joli/joli').connect('joso');
 
 	// set  the $ which refere to the base controller
-	var $;
+	var $, currentView = 1;
 
 	var init = function(controller) {
+
 		String.prototype.format = String.prototype.f = function() {
 			var s = this, i = arguments.length;
 
@@ -14,27 +15,10 @@ var Currencies = (function() {
 			}
 			return s;
 		};
-		loadCurrencies();
-		$ = $ || controller;
-		addLabel = Ti.UI.createLabel({
-			text : '\u2295',
-			font : {
-				fontSize : 200
-			},
-			shadowColor : '#ff0000',
-			shadowOffset : {
-				x : 50,
-				y : 50
-			},
-			color : 'silver',
-			opacity : .8,
-			width : Ti.UI.SIZE,
-			height : Ti.UI.SIZE,
-			textAlign : Ti.UI.TEXT_ALIGNMENT_CENTER
-		});
-		$.currencies.add(addLabel);
 
-		$.currencies.backgroundGradient = {
+		$ = $ || controller;
+
+		$.view1.backgroundGradient = {
 			type : 'linear',
 			colors : ['#3498db', '#2980b9'],
 			startPoint : {
@@ -47,19 +31,69 @@ var Currencies = (function() {
 			},
 			backFillStart : false
 		};
-		addLabel.addEventListener('click', addNewCurrencyPair)
+
+		$.view2.backgroundGradient = {
+			type : 'linear',
+			colors : ['#e74c3c', '#c0392b'],
+			startPoint : {
+				x : '50%',
+				y : '0%'
+			},
+			endPoint : {
+				x : '50%',
+				y : '100%'
+			},
+			backFillStart : false
+		};
+
+		loadCurrencies();
+
+		$.addCross.addEventListener('click', addNewCurrencyPair)
+		alert($.addCross)
+		var currencypairs = new joli.model({
+			table : "currency_pair",
+			columns : {
+				id : "INTEGER PRIMARY KEY AUTOINCREMENT",
+				from_currency : "STRING",
+				to_currency : "STRING",
+				view_index : "INTEGER"
+			}
+
+		});
+
+		$.scrollableView.addEventListener('scrollend', function(e) {
+			currentView = e.currentPage + 1;
+			var checkIsset = new joli.query().select().from('currency_pair').where('view_index = ?', currentView).execute('array');
+			if ( currencypair = checkIsset[0]) {
+			}
+		});
+
+		var checkIsset = new joli.query().select().from('currency_pair').where('view_index = ?', currentView).execute('array');
+		if ( currencypair = checkIsset[0]) {
+		}
 
 	}
 	function addNewCurrencyPair() {
-		Ti.UI.backgroundColor = 'white';
+		alert('fd')
 		var win = Ti.UI.createWindow({
 			layout : 'vertical',
 			backgroundColor : 'white',
-			width : 90
+			left : 0,
+			width : '100%'
 		});
-		win.open({
-			modal : true
-		});
+
+		var pWidth = Ti.Platform.displayCaps.platformWidth;
+		var pHeight = Ti.Platform.displayCaps.platformHeight;
+		Ti.App.SCREEN_WIDTH = (pWidth > pHeight) ? pHeight : pWidth;
+		Ti.App.SCREEN_HEIGHT = (pWidth > pHeight) ? pWidth : pHeight;
+
+		var slide_it_left = Titanium.UI.createAnimation();
+		slide_it_left.left = Ti.App.SCREEN_WIDTH;
+		// to put it back to the left side of the window
+		slide_it_left.duration = 300;
+		var slide_it_right = Titanium.UI.createAnimation();
+		slide_it_right.left = Ti.App.SCREEN_WIDTH;
+		slide_it_left.duration = 300;
 
 		a = new joli.query().select().from('currencies');
 		cur = a.execute();
@@ -81,7 +115,7 @@ var Currencies = (function() {
 
 		picker.add(row);
 		picker2.add(row);
-		change = {};
+		var change = {};
 		picker.addEventListener('change', function(e) {
 			change['from'] = e.selectedValue[0];
 			if (change['to']) {
@@ -97,33 +131,48 @@ var Currencies = (function() {
 
 		win.add(picker);
 		win.add(picker2)
-		win.open();
+		win.open(slide_it_left);
+		win.addEventListener('swipe', function(e) {
+			if (e.direction == 'left' || e.direction == 'right') {
+				win.close(slide_it_right)
+			}
+		});
 
 	}
 
 	var saveChangePicker = function(change) {
 		var currencypairs = new joli.model({
-			table : "currencypairs",
+			table : "currency_pair",
 			columns : {
 				id : "INTEGER PRIMARY KEY AUTOINCREMENT",
-				from : "STRING",
-				to : "STRING"
-			},
-			methods : {
-				update : function(change) {
-					for (i in change) {
-						if (currencypairs.count())
-							this.set(i, change[i]);
-						else
-							this.newRecord(i, change[i]);
-					}
-
-				}
+				from_currency : "STRING",
+				to_currency : "STRING",
+				view_index : "INTEGER"
 			}
+
 		});
 		joli.models.initialize();
-		var currencypair = models.currencypairs.update();
-		currencypair.save();
+		var checkIsset = new joli.query().select('from_currency, COUNT(*) as total').from('currency_pair').where('view_index = ?', currentView).execute('array');
+		for (i in checkIsset) {
+			var toUpdate = checkIsset[i]['total'];
+		}
+
+		if (toUpdate) {
+			q = new joli.query().update('currency_pair').set({
+				from_currency : change['from'],
+				to_currency : change['to']
+			}).where('view_index = ? ', currentView);
+			q.execute() && q.save();
+
+		} else {
+			var currencypair = new joli.record(currencypairs);
+			currencypair.fromArray({
+				from_currency : change['from'],
+				to_currency : change['to'],
+				view_index : currentView
+			});
+			currencypair.save();
+		}
 
 	}
 	var loadCurrencies = function() {

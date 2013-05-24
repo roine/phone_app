@@ -1,14 +1,20 @@
 <Alloy>
-	<TabGroup height='Titanium.UI.FILL'>
+	<TabGroup height='Titanium.UI.FILL' fullscreen="true" navBarHidden='true'>
 		<Tab title="Weather" id="weather">
 			<Window title="Weather">
 				<Label>I am Window 1</Label>
 			</Window>
 		</Tab>
-		<Tab title="Currencies" id="currencies_tab">
-			<Window title="Currencies" id='currencies'>
-				
+		<Tab title="Currencies" id="currencies_tab" >
+			<Window title="Currencies" id='currencies' >
+				<ScrollableView id="scrollableView" showPagingControl="true">
+					<View id="view1"><Label id="addCross"></Label></View>
+					<View id="view2"><Label id="addCross"></Label></View>
+				</ScrollableView>
 			</Window>
+			
 		</Tab>
 	</TabGroup>
+	<Window id='currency_option' layout='vertical' backgroundColor='white' left='100%' width='100%'>
+				</Window>
 </Alloy>
