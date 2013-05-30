@@ -11,3 +11,31 @@
 	},
 	textAlign: 'center'
 } 
+
+"#view": {
+	backgroundGradient:{
+		colors : ['#3498db', '#2980b9'],
+	}
+}
+
+".currencyView":{
+	backgroundGradient:{
+		type : 'linear',
+		startPoint : {
+			x : '50%',
+			y : '0%'
+		},
+		endPoint : {
+			x : '50%',
+			y : '100%'
+		},
+		backFillStart : false
+	}
+}
+
+"#AddCurrencyPair":{
+	layout : 'vertical',
+	backgroundColor : 'white',
+	left : 0,
+	width : '100%'
+}

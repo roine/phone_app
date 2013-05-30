@@ -24,112 +24,89 @@ var Currencies = (function() {
 				money : "STRING UNIQUE"
 			}
 		});
+
 		return m;
 	})();
-
+	joli.models.initialize();
 	// set  the $ which refere to the base controller
-	var $, currentView = 1;
+	var $, currentView = 1, labels = [];
 
 	var init = function(controller) {
 
-		String.prototype.format = String.prototype.f = function() {
-			var s = this, i = arguments.length;
-
-			while (i--) {
-				s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
-			}
-			return s;
-		};
-
 		$ = $ || controller;
 
-		$.view1.backgroundGradient = {
-			type : 'linear',
-			colors : ['#3498db', '#2980b9'],
-			startPoint : {
-				x : '50%',
-				y : '0%'
-			},
-			endPoint : {
-				x : '50%',
-				y : '100%'
-			},
-			backFillStart : false
-		};
-
-		$.view2.backgroundGradient = {
-			type : 'linear',
-			colors : ['#e74c3c', '#c0392b'],
-			startPoint : {
-				x : '50%',
-				y : '0%'
-			},
-			endPoint : {
-				x : '50%',
-				y : '100%'
-			},
-			backFillStart : false
-		};
-
+		// load the currencies if necessary
 		loadCurrencies();
-
-		var addLabel = [];
-		for (var i = 0, total = 2; i < total; i++) {
-			addLabel[i] = Ti.UI.createLabel({
-				text : '\u2295',
-				font : {
-					fontSize : 250
-				},
-				shadowColor : '#ff0000',
-				shadowOffset : {
-					x : 50,
-					y : 50
-				},
-				color : 'white',
-				opacity : .8,
-				width : Ti.UI.SIZE,
-				height : Ti.UI.SIZE,
-				textAlign : Ti.UI.TEXT_ALIGNMENT_CENTER
-			});
-			addLabel[i].addEventListener('click', addNewCurrencyPair)
+		if (!hasSave) {
+			showSavedCurrencyPair();
+		} else {
+			showAddLabel();
 		}
-
-		$.scrollableView.addEventListener('scrollend', function(e) {
-			if (!hasSave()) {
-				addLabel[currentView].hide()
-			}
-		});
-		$.view1.add(addLabel[0]);
-		$.view2.add(addLabel[1]);
-		if (!hasSave()) {
-			addLabel[currentView].hide()
-		}
+		registerEvents();
 
 	}
+	function showAddLabel() {
+		var label = Ti.UI.createLabel({
+			text : '\u2295',
+			font : {
+				fontSize : 250
+			},
+			shadowColor : '#ff0000',
+			shadowOffset : {
+				x : 50,
+				y : 50
+			},
+			color : 'white',
+			opacity : .8,
+			width : Ti.UI.SIZE,
+			height : Ti.UI.SIZE,
+			textAlign : Ti.UI.TEXT_ALIGNMENT_CENTER
+		});
+		labels.push(label);
+
+		Titanium.UI.currentWindow.add(label);
+	}
+
+	function showSavedCurrencyPair() {
+
+	}
+
+	function registerEvents() {
+		$.scrollableView.addEventListener('scrollend', updateCurrentView, false);
+		for (i in labels) {
+			var label = labels[i];
+			(function(label) {
+				label.addEventListener('click', addNewCurrencyPair, false);
+			})(label);
+		}
+		$.AddCurrencyPair.addEventListener('swipe', closeCurrencyPairOption, false);
+	}
+
+	/*
+	 * Helper
+	 */
 	function hasSave(view) {
 		return models.currency_pairs.findOneBy('view_index', currentView);
 	}
 
+	/*
+	 * End Helper
+	 */
+
+	/*
+	 * Event callbacks
+	 */
+	function updateCurrentView(e) {
+		currentView = e.currentPage;
+	}
+
+	function closeCurrencyPairOption(e) {
+		if (e.direction == 'left' || e.direction == 'right') {
+			$.AddCurrencyPair.close();
+		}
+	}
+
 	function addNewCurrencyPair() {
-		var win = Ti.UI.createWindow({
-			layout : 'vertical',
-			backgroundColor : 'white',
-			left : 0,
-			width : '100%'
-		});
-
-		var pWidth = Ti.Platform.displayCaps.platformWidth;
-		var pHeight = Ti.Platform.displayCaps.platformHeight;
-		Ti.App.SCREEN_WIDTH = (pWidth > pHeight) ? pHeight : pWidth;
-		Ti.App.SCREEN_HEIGHT = (pWidth > pHeight) ? pWidth : pHeight;
-
-		var slide_it_left = Titanium.UI.createAnimation();
-		slide_it_left.left = Ti.App.SCREEN_WIDTH;
-		// to put it back to the left side of the window
-		slide_it_left.duration = 300;
-		var slide_it_right = Titanium.UI.createAnimation();
-		slide_it_right.left = Ti.App.SCREEN_WIDTH;
-		slide_it_left.duration = 300;
 
 		a = new joli.query().select().from('currencies');
 		cur = a.execute();
@@ -140,49 +117,38 @@ var Currencies = (function() {
 			});
 		}
 
-		var picker = Ti.UI.createPicker({
-			top : 50,
-			selectionIndicator : true
-		});
-		var picker2 = Ti.UI.createPicker({
-			top : 100,
-			selectionIndicator : true
-		});
+		$.picker.add(row);
+		$.picker2.add(row);
 
-		picker.add(row);
-		picker2.add(row);
 		var change = {};
-		picker.addEventListener('change', function(e) {
+		$.picker.addEventListener('change', function(e) {
 			change['from'] = e.selectedValue[0];
 			if (change['to']) {
 				saveChangePicker(change);
 			}
 		}, false);
-		picker2.addEventListener('change', function(e) {
+		$.picker2.addEventListener('change', function(e) {
 			change['to'] = e.selectedValue[0];
 			if (change['from']) {
 				saveChangePicker(change);
 			}
 		}, false);
 
-		win.add(picker);
-		win.add(picker2)
-		win.open(slide_it_left);
-		win.addEventListener('swipe', function(e) {
-			if (e.direction == 'left' || e.direction == 'right') {
-				win.close(slide_it_right)
-			}
-		});
+		$.AddCurrencyPair.open();
 
 	}
 
-	var saveChangePicker = function(change) {
+	/*
+	 * End Event Callback
+	 */
 
-		joli.models.initialize();
-		var checkIsset = new joli.query().select('from_currency, COUNT(*) as total').from('currency_pair').where('view_index = ?', currentView).execute('array');
-		for (i in checkIsset) {
-			var toUpdate = checkIsset[i]['total'];
-		}
+	var saveChangePicker = function(change) {
+		
+		var toUpdate = models.currency_pairs.count({
+			where : {
+				'view_index = ?' : currentView
+			}
+		});
 
 		if (toUpdate) {
 			q = new joli.query().update('currency_pair').set({
@@ -192,7 +158,8 @@ var Currencies = (function() {
 			q.execute() && q.save();
 
 		} else {
-			var currencypair = new joli.record(currencypairs);
+			// create new entry
+			var currencypair = new joli.record(models.currencypairs);
 			currencypair.fromArray({
 				from_currency : change['from'],
 				to_currency : change['to'],
@@ -203,18 +170,10 @@ var Currencies = (function() {
 
 	}
 	var loadCurrencies = function() {
-		currencies = new joli.model({
-			table : "currencies",
-			columns : {
-				id : "INTEGER PRIMARY KEY AUTOINCREMENT",
-				code : "STRING UNIQUE",
-				money : "STRING UNIQUE"
-			}
-		});
-		joli.models.initialize();
 
 		// table exists
-		if (currencies.count()) {
+
+		if (models.currencies.count()) {
 			return;
 		} else {
 			if (!Titanium.Network.online) {
@@ -224,7 +183,8 @@ var Currencies = (function() {
 			var message = "Please wait while loading: {0}%"
 			var loading = Titanium.UI.createAlertDialog({
 				title : "Loading",
-				message : message.format("0")
+				message : message.format("0"),
+				persistent : true
 			});
 
 			loading.show();
@@ -232,12 +192,12 @@ var Currencies = (function() {
 				onload : function(e) {
 
 					json = JSON.parse(this.responseText);
-					var currency = new joli.record(currencies);
+
 					j = 0;
 					total = Object.keys(json).length;
 					for (i in json) {
 						j++;
-						currency.fromArray({
+						var currency = models.currencies.newRecord({
 							code : i,
 							money : json[i]
 						});

@@ -37,17 +37,17 @@ function Controller() {
     $.__views.currencies = Ti.UI.createWindow({
         backgroundColor: "#fff",
         title: "Currencies",
-        id: "currencies"
+        id: "currencies",
+        borderColor: "red"
     });
     var __alloyId3 = [];
-    $.__views.view1 = Ti.UI.createView({
-        id: "view1"
+    $.__views.view = Ti.UI.createView({
+        backgroundGradient: {
+            colors: [ "#3498db", "#2980b9" ]
+        },
+        id: "view"
     });
-    __alloyId3.push($.__views.view1);
-    $.__views.view2 = Ti.UI.createView({
-        id: "view2"
-    });
-    __alloyId3.push($.__views.view2);
+    __alloyId3.push($.__views.view);
     $.__views.scrollableView = Ti.UI.createScrollableView({
         views: __alloyId3,
         id: "scrollableView",
@@ -69,11 +69,36 @@ function Controller() {
         width: "100%"
     });
     $.__views.currency_option && $.addTopLevelView($.__views.currency_option);
+    $.__views.AddCurrencyPair = Ti.UI.createWindow({
+        backgroundColor: "white",
+        layout: "vertical",
+        left: 0,
+        width: "100%",
+        id: "AddCurrencyPair"
+    });
+    $.__views.AddCurrencyPair && $.addTopLevelView($.__views.AddCurrencyPair);
+    $.__views.picker = Ti.UI.createPicker({
+        id: "picker",
+        top: "50",
+        selectionIndicator: "true"
+    });
+    $.__views.AddCurrencyPair.add($.__views.picker);
+    $.__views.picker2 = Ti.UI.createPicker({
+        id: "picker2",
+        top: "100",
+        selectionIndicator: "true"
+    });
+    $.__views.AddCurrencyPair.add($.__views.picker2);
     exports.destroy = function() {};
     _.extend($, $.__views);
     $.currencies_tab.addEventListener("click", function() {
         require("currencies").init($);
     });
+    String.prototype.format = String.prototype.f = function() {
+        var s = this, i = arguments.length;
+        while (i--) s = s.replace(new RegExp("\\{" + i + "\\}", "gm"), arguments[i]);
+        return s;
+    };
     $.index.open();
     _.extend($, exports);
 }

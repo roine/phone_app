@@ -17,5 +17,7 @@
 	"os:blackberry": {},
 	"os:ios": {},
 	"os:mobileweb": {},
-	"dependencies": {}
+	"dependencies": {
+	 "com.appcelerator.loading":"1.0"
+	 }
 }

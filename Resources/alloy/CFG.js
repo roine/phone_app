@@ -1,5 +1,7 @@
 module.exports = {
-    dependencies: {},
+    dependencies: {
+        "com.appcelerator.loading": "1.0"
+    },
     weather: {
         URL: "https://api.forecast.io/forecast/",
         key: "a93457dfe36c5407abc0d83eb685908c"

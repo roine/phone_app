@@ -6,15 +6,17 @@
 			</Window>
 		</Tab>
 		<Tab title="Currencies" id="currencies_tab" >
-			<Window title="Currencies" id='currencies' >
+			<Window title="Currencies" id='currencies' borderColor='red'>
 				<ScrollableView id="scrollableView" showPagingControl="true">
-					<View id="view1"></View>
-					<View id="view2"></View>
+					<View id="view" class='currencyView'></View>
 				</ScrollableView>
 			</Window>
-			
+
 		</Tab>
 	</TabGroup>
-	<Window id='currency_option' layout='vertical' backgroundColor='white' left='100%' width='100%'>
-				</Window>
+	<Window id='currency_option' layout='vertical' backgroundColor='white' left='100%' width='100%'></Window>
+	<Window id='AddCurrencyPair'>
+		<Picker id="picker" top="50" selectionIndicator="true" >
+		<Picker id="picker2" top="100" selectionIndicator="true" >
+	</Window>
 </Alloy>

@@ -1,6 +1,15 @@
 $.currencies_tab.addEventListener('click', function() {
 	// open currencies tab
 	var currencies = require('currencies').init($);
-})
+});
+
+String.prototype.format = String.prototype.f = function() {
+	var s = this, i = arguments.length;
+
+	while (i--) {
+		s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
+	}
+	return s;
+};
 
 $.index.open();
