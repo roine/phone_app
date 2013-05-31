@@ -1,6 +1,9 @@
+var joli;
 var Currencies = (function() {
 	// 	load joli ORM
-	var joli = require('/joli/joli').connect('joso');
+
+	joli = require('/joli/joli').connect('joso');
+	// Ti.include('joli.models/currencies.js');
 
 	var models = (function() {
 
@@ -27,7 +30,9 @@ var Currencies = (function() {
 
 		return m;
 	})();
+
 	joli.models.initialize();
+
 	// set  the $ which refere to the base controller
 	var $, currentView = 1, labels = [];
 
@@ -143,7 +148,7 @@ var Currencies = (function() {
 	 */
 
 	var saveChangePicker = function(change) {
-		
+
 		var toUpdate = models.currency_pairs.count({
 			where : {
 				'view_index = ?' : currentView

@@ -1,3 +1,5 @@
+var joli;
+
 var Currencies = function() {
     function showAddLabel() {
         var label = Ti.UI.createLabel({
@@ -59,7 +61,7 @@ var Currencies = function() {
         }, false);
         $.AddCurrencyPair.open();
     }
-    var joli = require("/joli/joli").connect("joso");
+    joli = require("/joli/joli").connect("joso");
     var models = function() {
         var m = {};
         m.currency_pairs = new joli.model({
@@ -90,14 +92,11 @@ var Currencies = function() {
         registerEvents();
     };
     var saveChangePicker = function(change) {
-        joli.models.initialize();
-        alert("a");
         var toUpdate = models.currency_pairs.count({
             where: {
                 "view_index = ?": currentView
             }
         });
-        alert("d");
         if (toUpdate) {
             q = new joli.query().update("currency_pair").set({
                 from_currency: change["from"],
