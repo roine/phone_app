@@ -46,17 +46,27 @@ var Currencies = function() {
         cur = a.execute();
         var row = [];
         for (i in cur) row[i] = Ti.UI.createPickerRow({
-            title: cur[i].code + " - " + cur[i].money
+            title: cur[i].code + " - " + cur[i].money,
+            custom: cur[i].id
         });
+        var selected = getCurrencyId();
         $.picker.add(row);
+        $.picker.setSelectedRow(0, selected[0], false);
         $.picker2.add(row);
+        $.picker2.setSelectedRow(0, selected[1], false);
         var change = {};
         $.picker.addEventListener("change", function(e) {
-            change["from"] = e.selectedValue[0];
+            change["from"] = {
+                value: e.selectedValue[0],
+                row: e.rowIndex
+            };
             change["to"] && saveChangePicker(change);
         }, false);
         $.picker2.addEventListener("change", function(e) {
-            change["to"] = e.selectedValue[0];
+            change["to"] = {
+                value: e.selectedValue[0],
+                row: e.rowIndex
+            };
             change["from"] && saveChangePicker(change);
         }, false);
         $.AddCurrencyPair.open();
@@ -65,11 +75,13 @@ var Currencies = function() {
     var models = function() {
         var m = {};
         m.currency_pairs = new joli.model({
-            table: "currency_pair",
+            table: "currency_pairs",
             columns: {
                 id: "INTEGER PRIMARY KEY AUTOINCREMENT",
                 from_currency: "STRING",
+                from_currency_id: "INTEGER",
                 to_currency: "STRING",
+                to_currency_id: "INTEGER",
                 view_index: "INTEGER"
             }
         });
@@ -83,13 +95,22 @@ var Currencies = function() {
         });
         return m;
     }();
-    joli.models.initialize();
     var $, currentView = 1, labels = [];
     var init = function(controller) {
+        joli.models.initialize();
         $ = $ || controller;
         loadCurrencies();
         hasSave ? showAddLabel() : showSavedCurrencyPair();
         registerEvents();
+    };
+    getCurrencyId = function() {
+        if (!hasSave() || !currentView) return;
+        var q = new joli.query().select().from("currency_pairs").where("view_index = ?", currentView).execute();
+        if (q.length > 1) {
+            alert("Problem with duplicate data for one view");
+            return;
+        }
+        return [ q[0].from_currency_id, q[0].to_currency_id ];
     };
     var saveChangePicker = function(change) {
         var toUpdate = models.currency_pairs.count({
@@ -98,16 +119,20 @@ var Currencies = function() {
             }
         });
         if (toUpdate) {
-            q = new joli.query().update("currency_pair").set({
-                from_currency: change["from"],
-                to_currency: change["to"]
+            q = new joli.query().update("currency_pairs").set({
+                from_currency: change.from.value,
+                from_currency_id: change.from.row,
+                to_currency: change.to.value,
+                to_currency_id: change.to.row
             }).where("view_index = ? ", currentView);
             q.execute() && q.save();
         } else {
-            var currencypair = new joli.record(models.currencypairs);
+            var currencypair = new joli.record(models.currency_pairs);
             currencypair.fromArray({
-                from_currency: change["from"],
-                to_currency: change["to"],
+                from_currency: change.from.value,
+                from_currency_id: change.from.row,
+                to_currency: change.to.value,
+                to_currency_id: change.to.row,
                 view_index: currentView
             });
             currencypair.save();
@@ -133,10 +158,6 @@ var Currencies = function() {
                 total = Object.keys(json).length;
                 for (i in json) {
                     j++;
-                    var currency = models.currencies.newRecord({
-                        code: i,
-                        money: json[i]
-                    });
                     percentage = Math.round(100 * (j / total));
                     loading.setMessage(message.format(percentage));
                     currency.save();
@@ -152,8 +173,7 @@ var Currencies = function() {
         xhr.send();
     };
     return {
-        init: init,
-        loadCurrencies: loadCurrencies
+        init: init
     };
 }();
 
