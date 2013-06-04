@@ -19,9 +19,27 @@ var Currencies = function() {
             textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER
         });
         labels.push(label);
-        Titanium.UI.currentWindow.add(label);
+        currentViewObj.add(label);
     }
-    function showSavedCurrencyPair() {}
+    function showSavedCurrencyPair() {
+        var pair = models.currency_pairs.findOneBy("view_index", currentView);
+        var to = Ti.UI.createLabel({
+            text: pair.to_currency,
+            textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+            top: "20%",
+            color: "white"
+        });
+        var from = Ti.UI.createLabel({
+            text: pair.from_currency,
+            textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+            top: "60%",
+            color: "white",
+            s: "hello"
+        });
+        alert(from.s);
+        currentViewObj.add(to);
+        currentViewObj.add(from);
+    }
     function registerEvents() {
         $.scrollableView.addEventListener("scrollend", updateCurrentView, false);
         for (i in labels) {
@@ -33,10 +51,12 @@ var Currencies = function() {
         $.AddCurrencyPair.addEventListener("swipe", closeCurrencyPairOption, false);
     }
     function hasSave() {
-        return models.currency_pairs.findOneBy("view_index", currentView);
+        return !!models.currency_pairs.findOneBy("view_index", currentView);
     }
     function updateCurrentView(e) {
+        var viewArray = $.scrollableView.getViews();
         currentView = e.currentPage;
+        currentViewObj = viewArray[currentView];
     }
     function closeCurrencyPairOption(e) {
         ("left" == e.direction || "right" == e.direction) && $.AddCurrencyPair.close();
@@ -49,11 +69,12 @@ var Currencies = function() {
             title: cur[i].code + " - " + cur[i].money,
             custom: cur[i].id
         });
-        var selected = getCurrencyId();
         $.picker.add(row);
-        $.picker.setSelectedRow(0, selected[0], false);
         $.picker2.add(row);
-        $.picker2.setSelectedRow(0, selected[1], false);
+        if (selected = getCurrencyId()) {
+            $.picker.setSelectedRow(0, selected[0], false);
+            $.picker2.setSelectedRow(0, selected[1], false);
+        }
         var change = {};
         $.picker.addEventListener("change", function(e) {
             change["from"] = {
@@ -95,20 +116,23 @@ var Currencies = function() {
         });
         return m;
     }();
-    var $, currentView = 1, labels = [];
+    var $, currentView = 0, currentViewObj = {}, labels = [];
     var init = function(controller) {
-        joli.models.initialize();
         $ = $ || controller;
+        var viewArray = $.scrollableView.getViews();
+        currentView = $.scrollableView.getCurrentPage();
+        currentViewObj = viewArray[currentView];
+        joli.models.initialize();
         loadCurrencies();
-        hasSave ? showAddLabel() : showSavedCurrencyPair();
+        hasSave() ? showSavedCurrencyPair() : showAddLabel();
         registerEvents();
     };
     getCurrencyId = function() {
-        if (!hasSave() || !currentView) return;
+        if (!hasSave() || isNaN(currentView)) return false;
         var q = new joli.query().select().from("currency_pairs").where("view_index = ?", currentView).execute();
         if (q.length > 1) {
             alert("Problem with duplicate data for one view");
-            return;
+            return false;
         }
         return [ q[0].from_currency_id, q[0].to_currency_id ];
     };
