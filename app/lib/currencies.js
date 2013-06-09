@@ -3,8 +3,8 @@ var Currencies = (function() {
 	// 	load joli ORM
 
 	joli = require('/joli/joli').connect('joso');
-	// Ti.include('joli.models/currencies.js');
-
+	// Ti.include('joli.models/currencies');
+	
 	var models = (function() {
 
 		var m = {};
@@ -32,6 +32,7 @@ var Currencies = (function() {
 
 		return m;
 	})();
+joli.models.initialize();
 
 	// set  the $ which refere to the base controller
 	var $, currentView = 0, currentViewObj = {}, labels = [];
@@ -43,7 +44,7 @@ var Currencies = (function() {
 		currentView = $.scrollableView.getCurrentPage();
 		currentViewObj = viewArray[currentView];
 		
-		joli.models.initialize();
+		
 		
 
 		// load the currencies if necessary
@@ -231,8 +232,7 @@ var Currencies = (function() {
 	var loadCurrencies = function() {
 
 		// table exists
-
-		if (models.currencies.count()) {
+		if (q = new joli.query().count().from('currencies')) {
 			return;
 		} else {
 			if (!Titanium.Network.online) {

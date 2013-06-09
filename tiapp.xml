@@ -47,6 +47,7 @@
         <module platform="commonjs">ti.cloud</module>
     </modules>
     <deployment-targets>
+        <target device="tizen">false</target>
         <target device="iphone">false</target>
         <target device="ipad">false</target>
         <target device="blackberry">false</target>

@@ -10,12 +10,12 @@ function Controller() {
         navBarHidden: "true",
         id: "index"
     });
-    $.__views.__alloyId1 = Ti.UI.createWindow({
+    $.__views.__alloyId6 = Ti.UI.createWindow({
         backgroundColor: "#fff",
         title: "Weather",
-        id: "__alloyId1"
+        id: "__alloyId6"
     });
-    $.__views.__alloyId2 = Ti.UI.createLabel({
+    $.__views.__alloyId7 = Ti.UI.createLabel({
         width: Ti.UI.SIZE,
         height: Ti.UI.SIZE,
         color: "#000",
@@ -25,11 +25,11 @@ function Controller() {
         },
         textAlign: "center",
         text: "I am Window 1",
-        id: "__alloyId2"
+        id: "__alloyId7"
     });
-    $.__views.__alloyId1.add($.__views.__alloyId2);
+    $.__views.__alloyId6.add($.__views.__alloyId7);
     $.__views.weather = Ti.UI.createTab({
-        window: $.__views.__alloyId1,
+        window: $.__views.__alloyId6,
         title: "Weather",
         id: "weather"
     });
@@ -40,16 +40,16 @@ function Controller() {
         id: "currencies",
         borderColor: "red"
     });
-    var __alloyId3 = [];
+    var __alloyId8 = [];
     $.__views.view = Ti.UI.createView({
         backgroundGradient: {
             colors: [ "#3498db", "#2980b9" ]
         },
         id: "view"
     });
-    __alloyId3.push($.__views.view);
+    __alloyId8.push($.__views.view);
     $.__views.scrollableView = Ti.UI.createScrollableView({
-        views: __alloyId3,
+        views: __alloyId8,
         id: "scrollableView",
         showPagingControl: "true"
     });

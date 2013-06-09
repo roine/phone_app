@@ -33,10 +33,8 @@ var Currencies = function() {
             text: pair.from_currency,
             textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
             top: "60%",
-            color: "white",
-            s: "hello"
+            color: "white"
         });
-        alert(from.s);
         currentViewObj.add(to);
         currentViewObj.add(from);
     }
@@ -116,13 +114,13 @@ var Currencies = function() {
         });
         return m;
     }();
+    joli.models.initialize();
     var $, currentView = 0, currentViewObj = {}, labels = [];
     var init = function(controller) {
         $ = $ || controller;
         var viewArray = $.scrollableView.getViews();
         currentView = $.scrollableView.getCurrentPage();
         currentViewObj = viewArray[currentView];
-        joli.models.initialize();
         loadCurrencies();
         hasSave() ? showSavedCurrencyPair() : showAddLabel();
         registerEvents();
@@ -163,7 +161,7 @@ var Currencies = function() {
         }
     };
     var loadCurrencies = function() {
-        if (models.currencies.count()) return;
+        if (q = new joli.query().count().from("currencies")) return;
         if (!Titanium.Network.online) {
             alert("No connection whatsoever to internet dude!");
             return;

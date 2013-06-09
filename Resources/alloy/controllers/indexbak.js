@@ -8,17 +8,17 @@ function Controller() {
         height: Titanium.UI.FILL,
         id: "indexbak"
     });
-    $.__views.__alloyId6 = Ti.UI.createWindow({
+    $.__views.__alloyId0 = Ti.UI.createWindow({
         title: "Weather",
-        id: "__alloyId6"
+        id: "__alloyId0"
     });
-    $.__views.__alloyId7 = Ti.UI.createLabel({
+    $.__views.__alloyId1 = Ti.UI.createLabel({
         text: "I am Window 1",
-        id: "__alloyId7"
+        id: "__alloyId1"
     });
-    $.__views.__alloyId6.add($.__views.__alloyId7);
+    $.__views.__alloyId0.add($.__views.__alloyId1);
     $.__views.weather = Ti.UI.createTab({
-        window: $.__views.__alloyId6,
+        window: $.__views.__alloyId0,
         title: "Weather",
         id: "weather"
     });
@@ -27,17 +27,17 @@ function Controller() {
         title: "Currencies",
         id: "currencies_opt"
     });
-    $.__views.__alloyId8 = Alloy.createController("option_menu", {
-        id: "__alloyId8",
+    $.__views.__alloyId2 = Alloy.createController("option_menu", {
+        id: "__alloyId2",
         __parentSymbol: $.__views.currencies_opt
     });
-    $.__views.__alloyId8.setParent($.__views.currencies_opt);
-    var __alloyId9 = [];
+    $.__views.__alloyId2.setParent($.__views.currencies_opt);
+    var __alloyId3 = [];
     $.__views.view1 = Ti.UI.createView({
         id: "view1",
         backgroundImage: "http://subtlepatterns.com/patterns/debut_dark.png"
     });
-    __alloyId9.push($.__views.view1);
+    __alloyId3.push($.__views.view1);
     $.__views.from = Ti.UI.createTextField({
         id: "from",
         keyboardType: Titanium.UI.KEYBOARD_NUMBER_PAD,
@@ -72,14 +72,14 @@ function Controller() {
         id: "view2",
         backgroundColor: "#246"
     });
-    __alloyId9.push($.__views.view2);
+    __alloyId3.push($.__views.view2);
     $.__views.view3 = Ti.UI.createView({
         id: "view3",
         backgroundColor: "#48b"
     });
-    __alloyId9.push($.__views.view3);
+    __alloyId3.push($.__views.view3);
     $.__views.scrollableView = Ti.UI.createScrollableView({
-        views: __alloyId9,
+        views: __alloyId3,
         id: "scrollableView",
         showPagingControl: "true",
         maxZoomScale: "2.0"

@@ -1,5 +1,3 @@
-
-
 var models = (function() {
 
 	var m = {};
